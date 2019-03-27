@@ -8,11 +8,10 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 ```{r}
-movies <- read.csv(file = "P:/Term4/DATA311/Project/imdb-data-from-2006-to-2016/IMDB-Movie-Data.csv")
+movies<- read.csv(file = "P:/Term4/DATA311/Project/imdb-data-from-2006-to-2016/OriginalDS/IMDB-Movie-Data.csv")
+names(movies)
 attach(movies)
-View(movies)
 slr <- lm(Rank ~ Revenue..Millions.) 
 summary(slr)
 ```
@@ -20,17 +19,34 @@ summary(slr)
 ## Fixing NA values
 varibale named NewMovieDS has no NA values
 ```{r}
-
 any(is.na(movies))
-sum(is.na(movies))
-colSums(is.na(movies))
-NewMovieDS <- na.omit(movies)
-any(is.na(NewMovieDS))
-nrow(NewMovieDS)
-NewMovieDS2 <- movies[complete.cases(movies),]
-nrow(NewMovieDS2)
-View(NewMovieDS)
+#sum(is.na(movies))
+#colSums(is.na(movies))
+New_MovieDS <- na.omit(movies)
+any(is.na(New_MovieDS))
+#nrow(NewMovieDS)
+#NewMovieDS2 <- movies[complete.cases(movies),]
+#nrow(NewMovieDS2)
+#View(NewMovieDS)
 ```
+
+##Creating training and testing datasets
+```{r}
+#Splitiing dataset into training and testing
+#ind <- sample(2, nrow(New_MovieDS), replace = TRUE, prob = c(0.5,0.5))
+#train.data = New_MovieDS[ind==1,]
+#test.data = New_MovieDS[ind==2,]
+train <- sample(1:nrow(New_MovieDS), nrow(New_MovieDS)/2)
+test <- -train
+train.data <- New_MovieDS[train,]
+test.data <- New_MovieDS[test,]
+#View(NewMovieDS)
+New_MovieDS$NewGenre <- gsub(",.*","", New_MovieDS[,3])
+#newGenre
+#genre
+names(New_MovieDS)
+```
+
 
 
 
@@ -39,13 +55,12 @@ View(NewMovieDS)
 ```{r}
 library(tree)
 library(gclus)
-movies <- read.csv(file = "P:/Term4/DATA311/Project/imdb-data-from-2006-to-2016/IMDB-Movie-Data.csv")
 #attach(movies)
-data(movies)
+data(New_MovieDS)
 set.seed(12412)
-movies$Genre <- factor(movies$Genre)
-bod <- data.frame(movies)
-bocl <- tree(Genre~ Rank+Runtime..Minutes.+Rating+Votes+Revenue..Millions.+Metascore , data=bod)
+New_MovieDS$NewGenre <- factor(New_MovieDS$NewGenre)
+bod <- data.frame(New_MovieDS)
+bocl <- tree(NewGenre ~ Rank+Runtime..Minutes.+Rating+Votes+Revenue..Millions.+Metascore , data=bod)
 plot(bocl)
 text(bocl)
 ```
@@ -62,4 +77,59 @@ p.bocl <- prune.misclass(bocl, best=8)
 plot(p.bocl)
 text(p.bocl)
 summary(p.bocl)
+```
+
+##Random Forest
+```{r}
+library(randomForest)
+library(caret)
+set.seed(12)
+RandomForest <-randomForest(Revenue..Millions. ~ Runtime..Minutes. + Rating + Votes + Rank + Metascore ,data= train.data,importance=TRUE)
+RandomForest
+p1 <- predict(RandomForest,test.data)
+mean((p1-test.data$Revenue..Millions.)^2)
+plot(RandomForest)
+varImpPlot(RandomForest)
+```
+
+##Clustering
+```{r}
+#Scatter plot
+plot(Revenue..Millions.~ Votes)
+with(New_MovieDS,text(Revenue..Millions.~ Votes, label = NewGenre, pos= 4, cex = .4))
+#Normalization
+z <- New_MovieDS[,-c(2,3,4,5,6,7,13)]
+m <- apply(z, 2, mean)
+s <- apply(z, 2, sd)
+z <- scale(z,m,s)
+#calculating Euclidean Distance
+distance <- dist(z)
+#print(distance,digits = 3)
+#Cluster Dendrogram with complete linkage
+hc.c <- hclust(distance)
+plot(hc.c, label= New_MovieDS$NewGenre)
+plot(hc.c, label= New_MovieDS$NewGenre,hang = -1)
+##Clustering Dendrogram with average Linkage
+hc.a <- hclust(distance, method = "average")
+plot(hc.a, label= New_MovieDS$NewGenre)
+plot(hc.a, label= New_MovieDS$NewGenre,hang = -1)
+##Clsuter Membership
+member.c <- cutree(hc.c,3)
+member.a <- cutree(hc.a,3)
+table(member.c,member.a)
+##Cluster Mean
+aggregate(z,list(member.c),mean)
+aggregate(New_MovieDS[,-c(2,3,4,5,6,7,13)], list(member.c),mean)
+##ScreePlot
+WSS <- (nrow(z)-1)*sum(apply(z,2,var))
+for(i in 2:20) WSS[i] <- sum(kmeans(z,centers=i)$withinss)
+plot(1:20, WSS, type = "b", xlab = "Number of Clusters", ylab = "Within Group SS")
+```
+
+
+##Kmeans
+```{r}
+Kc <- kmeans(New_MovieDS[,-c(2,3,4,5,6,7,13)],3)
+Kc
+plot(Revenue..Millions.~ Votes, New_MovieDS , col = Kc$cluster)
 ```
