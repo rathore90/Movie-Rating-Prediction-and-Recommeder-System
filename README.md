@@ -5,7 +5,7 @@ Please download the dataset from https://www.kaggle.com/rounakbanik/the-movies-d
 
 ## Project Report
 
-<a href="https://ibb.co/L9YBMCS"><img src="https://i.ibb.co/3S4Vw01/Data311-Report-03.png" alt="Data311-Report-03" border="0" align="middle"></a>
+<a href="https://ibb.co/L9YBMCS"><img src="https://i.ibb.co/3S4Vw01/Data311-Report-03.png" alt="Data311-Report-03" align="middle"></a>
 <a href="https://ibb.co/DKWsswJ"><img src="https://i.ibb.co/dKM11kT/Data311-Report-04.png" alt="Data311-Report-04" border="0"></a>
 <a href="https://ibb.co/wNxPNTd"><img src="https://i.ibb.co/27fC7wF/Data311-Report-05.png" alt="Data311-Report-05" border="0"></a>
 <a href="https://ibb.co/NW0Yv46"><img src="https://i.ibb.co/1RC2gSf/Data311-Report-06.png" alt="Data311-Report-06" border="0"></a>
