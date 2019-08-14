@@ -1,8 +1,3 @@
-Movie-Rating-Prediction-and-Recommender-System
-DATA 311 Project
-
-Please download the dataset from https://www.kaggle.com/rounakbanik/the-movies-dataset and place it in root folder and don't commit the dataset
-
 ## Project Report
 
 <a href="https://ibb.co/L9YBMCS"><img src="https://i.ibb.co/3S4Vw01/Data311-Report-03.png" alt="Data311-Report-03" align="middle"></a>
@@ -19,3 +14,7 @@ Please download the dataset from https://www.kaggle.com/rounakbanik/the-movies-d
 <a href="https://ibb.co/2nj1TQt"><img src="https://i.ibb.co/YRtFxMk/Data311-Report-14.png" alt="Data311-Report-14" border="0"></a>
 <a href="https://ibb.co/5BDc0j7"><img src="https://i.ibb.co/18V2gXS/Data311-Report-15.png" alt="Data311-Report-15" border="0"></a>
 
+Movie-Rating-Prediction-and-Recommender-System
+DATA 311 Project
+
+Please download the dataset from https://www.kaggle.com/rounakbanik/the-movies-dataset and place it in root folder and don't commit the dataset
